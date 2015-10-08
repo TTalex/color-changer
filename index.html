@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8"> 
+<script src='jquery-1.11.3.min'></script>
+<script src='spectrum.js'></script>
+<link rel='stylesheet' href='spectrum.css' />
+</head>
+<body>
+  <div style="position: absolute; top: 0px; bottom: 0px;">
+    <div id="flat">
+    </div>
+    <div style="position:fixed; top:60px; left:234px; width: 300px;">
+      <label style="float: left">Background image</label>
+      <input type="text" style="float:right" id="bgimg" value="http://i.imgur.com/LIKTzdo.jpg"/><br />
+      <label style="float: left">Cutout</label>
+      <input type="text" style="float:right" id="cutout" value="http://i.imgur.com/T8xJfrX.png"/>
+    </div>
+    <svg  viewBox="0 0 1 1" style="height:80%; position: fixed; bottom:0;">
+      <defs>
+	<filter id="whity">
+	  <feColorMatrix in="SourceGraphic" type="matrix" 
+			 values="
+				 0.9 0.9 0.9 0 0 
+				 0.9 0.9 0.9 0 0 
+				 0.9 0.9 0.9 0 0
+				 0 0 0 1 0
+				 "/>
+	</filter>
+	<filter id="color">
+	  <feColorMatrix in="SourceGraphic" type="matrix" id="mtrx"
+			 values="
+				 1              0 0 0 0 
+				 0         1              0 0 0 
+				 0 0       1              0 0
+				 0 0 0 1 0
+				 "/>
+	  
+	</filter>
+      </defs>
+      <image x="0" y="0" width="100%" height="100%" xlink:href="http://i.imgur.com/LIKTzdo.jpg" id="dbg"/>
+      <g filter="url(#color)">
+	<image x="0" y="0" width="100%" height="100%" filter="url(#whity)" xlink:href="http://i.imgur.com/T8xJfrX.png" id="dcut"/>
+      </g>
+    </svg>
+  </div>
+  <script>
+    function escapeHtml(text){
+    var map = {
+    '&': '&amp;',
+    '<':'&lt;',
+	'>':'&gt;',
+      '"':'&quot;',
+      "'":'&#039;'
+      };
+      return text.replace(/[&<>"']/g, function(m){ return map[m];});
+    }
+    $("#flat").spectrum({
+    flat: true,
+    showInput: true,
+    showButtons: false,
+    showAlpha: true,
+    color: "rgba(255,255,255,1)",
+    preferredFormat: "rgb",
+    move: function(color){
+    $("#mtrx").attr("values", (color._r)/250+" 0 0 0 0 0 "+(color._g)/250+" 0 0 0 0 0 "+(color._b)/250+" 0 0 0 0 0 "+color._a+" 0");
+    }
+    });
+    $("#bgimg").on("change paste keyup", function(){
+    $("#dbg").attr("xlink:href", escapeHtml($(this).val()));
+    });
+    $("#cutout").on("change paste keyup", function(){
+    $("#dcut").attr("xlink:href", escapeHtml($(this).val()));
+    });
+  </script>
+  <script type="text/javascript">
+var urlParams;
+(window.onpopstate = function () {
+    var match,
+        pl     = /\+/g,  // Regex for replacing addition symbol with a space
+        search = /([^&=]+)=?([^&]*)/g,
+        decode = function (s) { return decodeURIComponent(s.replace(pl, " ")); },
+        query  = window.location.search.substring(1);
+
+    urlParams = {};
+    while (match = search.exec(query))
+       urlParams[decode(match[1])] = decode(match[2]);
+})();
+if("bg" in urlParams){
+    $("#dbg").attr("xlink:href", escapeHtml(urlParams["bg"]));
+    $("#bgimg").attr("value", escapeHtml(urlParams["bg"]));
+}
+if("cut" in urlParams){
+    $("#dcut").attr("xlink:href", escapeHtml(urlParams["cut"]));
+    $("#cutout").attr("value", escapeHtml(urlParams["cut"]));
+}
+  </script>
+</body>
+</html>
