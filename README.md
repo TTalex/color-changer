@@ -1,7 +1,7 @@
 ##Introduction
 
 <p align="center">
-<img src ="demo.png" alt="Demo picture"/>
+<img src ="demo.jpg" alt="Demo picture"/>
 </p>
 
 Color-changer allows user to change colors of a part of a picture, such as hair. It uses two images, a background and a mask.
